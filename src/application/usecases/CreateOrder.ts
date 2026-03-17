@@ -1,12 +1,11 @@
 import { randomUUID } from "node:crypto";
-import { Order } from "../../domain/entities/Order.js";
-import { OrderItem } from "../../domain/entities/OrderItem.js";
-import { OrderRepository } from "../../domain/repositories/OrderRepository.js";
-import { NotificationService } from "../ports/NotificationService.js";
-import { PriceCalculator } from "../../domain/services/PriceCalculator.js";
-import { PaymentProcessor } from "../ports/PaymentProcessor.js";
-import { PaymentProcessorResolver } from "../services/PaymentProcessorResolver.js";
-import { CreateOrderDTO } from "../dtos/CreateOrderDTO.js";
+import { Order } from "../../domain/entities/Order";
+import { OrderItem } from "../../domain/entities/OrderItem";
+import { OrderRepository } from "../../domain/repositories/OrderRepository";
+import { NotificationService } from "../ports/NotificationService";
+import { PriceCalculator } from "../../domain/services/PriceCalculator";
+import { PaymentProcessorResolver } from "../services/PaymentProcessorResolver";
+import { CreateOrderDTO } from "../dtos/CreateOrderDTO";
 
 export class CreateOrder {
     constructor(

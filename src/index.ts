@@ -14,13 +14,9 @@ import { CreateOrderDTO } from "./application/dtos/CreateOrderDTO.js";
 
 const paypalPaymentProcessor = new PayPalPaymentProcessor();
 const blikPaymentProcessor = new BlikPaymentProcessor();
-const paymentProcessors: Record<PaymentMethod, PaymentProcessor> = {
-    PayPal: paypalPaymentProcessor,
-    BLIK: blikPaymentProcessor,
-};
 
 const priceCalculator = new PriceCalculator();
-const paymentProcessorResolver = new PaymentProcessorResolver(paymentProcessors);
+const paymentProcessorResolver = new PaymentProcessorResolver(paypalPaymentProcessor, blikPaymentProcessor);
 const fileOrderRepository = new FileOrderRepository();
 const consoleNotification = new ConsoleNotificationService();
 
