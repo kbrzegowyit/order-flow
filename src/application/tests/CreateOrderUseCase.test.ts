@@ -1,5 +1,4 @@
 import { OrderRepository } from "../../domain/repositories/OrderRepository";
-import { PriceCalculator } from "../../domain/services/PriceCalculator";
 import { CreateOrderDTO } from "../dtos/CreateOrderDTO";
 import { NotificationService } from "../ports/NotificationService";
 import { PaymentProcessor } from "../ports/PaymentProcessor";
@@ -7,7 +6,6 @@ import { PaymentProcessorRegistry } from "../ports/PaymentProcessorRegistry";
 import { CreateOrder } from "../usecases/CreateOrder";
 
 describe('CreateOrderUseCase', () => {
-  let priceCalculatorMock: jest.Mocked<PriceCalculator>;
   let paymentProcessorRegistryMock: jest.Mocked<PaymentProcessorRegistry>;
   let paymentProcessorMock: jest.Mocked<PaymentProcessor>;
   let orderRepositoryMock: jest.Mocked<OrderRepository>;
@@ -23,10 +21,6 @@ describe('CreateOrderUseCase', () => {
   };
 
   beforeEach(() => {
-    priceCalculatorMock = {
-      calculateTotalPrice: jest.fn(),
-    } as jest.Mocked<PriceCalculator>;
-
     paymentProcessorMock = {
       pay: jest.fn().mockResolvedValue(undefined),
     } as jest.Mocked<PaymentProcessor>;
@@ -44,7 +38,6 @@ describe('CreateOrderUseCase', () => {
     } as jest.Mocked<NotificationService>;
 
     createOrderUseCase = new CreateOrder(
-      priceCalculatorMock,
       paymentProcessorRegistryMock,
       orderRepositoryMock,
       notificationServiceMock
@@ -54,7 +47,6 @@ describe('CreateOrderUseCase', () => {
   it('should create an order successfully', async () => {
     const result = await createOrderUseCase.execute(validInput);
 
-    expect(priceCalculatorMock.calculateTotalPrice).toHaveBeenCalledWith(validInput.items);
     expect(paymentProcessorRegistryMock.getPaymentProcessor).toHaveBeenCalledWith(validInput.paymentMethod);
     expect(paymentProcessorMock.pay).toHaveBeenCalled();
     expect(orderRepositoryMock.save).toHaveBeenCalled();

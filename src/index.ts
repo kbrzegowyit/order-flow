@@ -1,9 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { CreateOrder } from "./application/usecases/CreateOrder.js";
-import { OrderItem } from "./domain/entities/OrderItem.js";
 import { FileOrderRepository } from "./infrastructure/repositories/FileOrderRepository.js";
 import { ConsoleNotificationService } from "./infrastructure/notifications/ConsoleNotificationService.js";
-import { PriceCalculator } from "./domain/services/PriceCalculator.js";
 import { PayPalPaymentProcessor } from "./infrastructure/payments/PayPalPaymentProcessor.js";
 import { BlikPaymentProcessor } from "./infrastructure/payments/BlikPaymentProcessor.js";
 import { CreateOrderItemDTO } from "./application/dtos/CreateOrderItemDTO.js";
@@ -13,7 +11,6 @@ import { PaymentProcessorResolver } from "./infrastructure/payments/PaymentProce
 const paypalPaymentProcessor = new PayPalPaymentProcessor();
 const blikPaymentProcessor = new BlikPaymentProcessor();
 
-const priceCalculator = new PriceCalculator();
 const paymentProcessorResolver = new PaymentProcessorResolver({
     PayPal: paypalPaymentProcessor,
     BLIK: blikPaymentProcessor,
@@ -39,7 +36,7 @@ const orderDto: CreateOrderDTO = {
     paymentMethod: 'BLIK',
 };
 
-const createOrder = new CreateOrder(priceCalculator, paymentProcessorResolver, fileOrderRepository, consoleNotification);
+const createOrder = new CreateOrder(paymentProcessorResolver, fileOrderRepository, consoleNotification);
 
 createOrder.execute(orderDto)
     .then((createdOrder) => {
