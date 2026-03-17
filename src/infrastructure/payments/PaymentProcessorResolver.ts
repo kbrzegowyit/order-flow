@@ -1,9 +1,10 @@
+import { PaymentProcessor } from "../../application/ports/PaymentProcessor.js";
+import { PaymentProcessorRegistry } from "../../application/ports/PaymentProcessorRegistry.js";
 import { PaymentMethod } from "../../domain/value-objects/PaymentMethod.js";
-import { BlikPaymentProcessor } from "../../infrastructure/payments/BlikPaymentProcessor.js";
-import { PayPalPaymentProcessor } from "../../infrastructure/payments/PayPalPaymentProcessor.js";
-import { PaymentProcessor } from "../ports/PaymentProcessor.js";
+import { BlikPaymentProcessor } from "./BlikPaymentProcessor.js";
+import { PayPalPaymentProcessor } from "./PayPalPaymentProcessor.js";
 
-export class PaymentProcessorResolver {
+export class PaymentProcessorResolver implements PaymentProcessorRegistry {
     private processors: Record<PaymentMethod, PaymentProcessor>
 
     constructor(
@@ -16,7 +17,7 @@ export class PaymentProcessorResolver {
         };
     }
 
-    public resolve(method: PaymentMethod): PaymentProcessor {
+    public getPaymentProcessor(method: PaymentMethod): PaymentProcessor {
         const processor = this.processors[method];
         if (!processor) {
             throw new Error(`Payment processor for method ${method} not found`);

@@ -5,12 +5,10 @@ import { FileOrderRepository } from "./infrastructure/repositories/FileOrderRepo
 import { ConsoleNotificationService } from "./infrastructure/notifications/ConsoleNotificationService.js";
 import { PriceCalculator } from "./domain/services/PriceCalculator.js";
 import { PayPalPaymentProcessor } from "./infrastructure/payments/PayPalPaymentProcessor.js";
-import { PaymentProcessorResolver } from "./application/services/PaymentProcessorResolver.js";
-import { PaymentMethod } from "./domain/value-objects/PaymentMethod.js";
-import { PaymentProcessor } from "./application/ports/PaymentProcessor.js";
 import { BlikPaymentProcessor } from "./infrastructure/payments/BlikPaymentProcessor.js";
 import { CreateOrderItemDTO } from "./application/dtos/CreateOrderItemDTO.js";
 import { CreateOrderDTO } from "./application/dtos/CreateOrderDTO.js";
+import { PaymentProcessorResolver } from "./infrastructure/payments/PaymentProcessorResolver.js";
 
 const paypalPaymentProcessor = new PayPalPaymentProcessor();
 const blikPaymentProcessor = new BlikPaymentProcessor();
