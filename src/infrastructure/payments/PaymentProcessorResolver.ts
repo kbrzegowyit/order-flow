@@ -1,21 +1,9 @@
 import { PaymentProcessor } from "../../application/ports/PaymentProcessor.js";
 import { PaymentProcessorRegistry } from "../../application/ports/PaymentProcessorRegistry.js";
 import { PaymentMethod } from "../../domain/value-objects/PaymentMethod.js";
-import { BlikPaymentProcessor } from "./BlikPaymentProcessor.js";
-import { PayPalPaymentProcessor } from "./PayPalPaymentProcessor.js";
 
 export class PaymentProcessorResolver implements PaymentProcessorRegistry {
-    private processors: Record<PaymentMethod, PaymentProcessor>
-
-    constructor(
-        paypalPaymentProcessor: PayPalPaymentProcessor,
-        blikPaymentProcessor: BlikPaymentProcessor,
-    ) {
-        this.processors = {
-            PayPal: paypalPaymentProcessor,
-            BLIK: blikPaymentProcessor,
-        };
-    }
+    constructor(private readonly processors: Record<PaymentMethod, PaymentProcessor>) {}
 
     public getPaymentProcessor(method: PaymentMethod): PaymentProcessor {
         const processor = this.processors[method];

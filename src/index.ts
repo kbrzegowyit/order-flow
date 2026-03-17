@@ -14,7 +14,11 @@ const paypalPaymentProcessor = new PayPalPaymentProcessor();
 const blikPaymentProcessor = new BlikPaymentProcessor();
 
 const priceCalculator = new PriceCalculator();
-const paymentProcessorResolver = new PaymentProcessorResolver(paypalPaymentProcessor, blikPaymentProcessor);
+const paymentProcessorResolver = new PaymentProcessorResolver({
+    PayPal: paypalPaymentProcessor,
+    BLIK: blikPaymentProcessor,
+}
+);
 const fileOrderRepository = new FileOrderRepository();
 const consoleNotification = new ConsoleNotificationService();
 
