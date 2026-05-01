@@ -4,13 +4,12 @@ import { OrderItem } from "../../domain/entities/OrderItem";
 import { OrderRepository } from "../../domain/repositories/OrderRepository";
 import { NotificationService } from "../ports/NotificationService";
 import { PriceCalculator } from "../../domain/services/PriceCalculator";
-import { PaymentProcessorResolver } from "../services/PaymentProcessorResolver";
 import { CreateOrderDTO } from "../dtos/CreateOrderDTO";
+import { PaymentProcessorRegistry } from "../ports/PaymentProcessorRegistry";
 
 export class CreateOrder {
     constructor(
-        private readonly priceCalculator: PriceCalculator,
-        private readonly paymentProcessorResolver: PaymentProcessorResolver,
+        private readonly paymentProcessorRegistry: PaymentProcessorRegistry,
         private readonly orderRepository: OrderRepository,
         private readonly notificationService: NotificationService,
     ) {}
@@ -22,16 +21,14 @@ export class CreateOrder {
             item.quantity,
             item.price
         ));
-        const totalPrice = this.priceCalculator.calculateTotalPrice(input.items);
         const order = new Order(
             randomUUID(),
             items,
-            totalPrice,
             new Date()
         );
 
-        const paymentProcessor = this.paymentProcessorResolver.resolve(input.paymentMethod);
-        await paymentProcessor.pay(totalPrice);
+        const paymentProcessor = this.paymentProcessorRegistry.getPaymentProcessor(input.paymentMethod);
+        await paymentProcessor.pay(order.totalPrice());
 
         await this.orderRepository.save(order);
 

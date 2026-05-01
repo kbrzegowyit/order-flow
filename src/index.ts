@@ -1,22 +1,21 @@
 import { randomUUID } from "node:crypto";
 import { CreateOrder } from "./application/usecases/CreateOrder.js";
-import { OrderItem } from "./domain/entities/OrderItem.js";
 import { FileOrderRepository } from "./infrastructure/repositories/FileOrderRepository.js";
 import { ConsoleNotificationService } from "./infrastructure/notifications/ConsoleNotificationService.js";
-import { PriceCalculator } from "./domain/services/PriceCalculator.js";
 import { PayPalPaymentProcessor } from "./infrastructure/payments/PayPalPaymentProcessor.js";
-import { PaymentProcessorResolver } from "./application/services/PaymentProcessorResolver.js";
-import { PaymentMethod } from "./domain/value-objects/PaymentMethod.js";
-import { PaymentProcessor } from "./application/ports/PaymentProcessor.js";
 import { BlikPaymentProcessor } from "./infrastructure/payments/BlikPaymentProcessor.js";
 import { CreateOrderItemDTO } from "./application/dtos/CreateOrderItemDTO.js";
 import { CreateOrderDTO } from "./application/dtos/CreateOrderDTO.js";
+import { PaymentProcessorResolver } from "./infrastructure/payments/PaymentProcessorResolver.js";
 
 const paypalPaymentProcessor = new PayPalPaymentProcessor();
 const blikPaymentProcessor = new BlikPaymentProcessor();
 
-const priceCalculator = new PriceCalculator();
-const paymentProcessorResolver = new PaymentProcessorResolver(paypalPaymentProcessor, blikPaymentProcessor);
+const paymentProcessorResolver = new PaymentProcessorResolver({
+    PayPal: paypalPaymentProcessor,
+    BLIK: blikPaymentProcessor,
+}
+);
 const fileOrderRepository = new FileOrderRepository();
 const consoleNotification = new ConsoleNotificationService();
 
@@ -37,7 +36,7 @@ const orderDto: CreateOrderDTO = {
     paymentMethod: 'BLIK',
 };
 
-const createOrder = new CreateOrder(priceCalculator, paymentProcessorResolver, fileOrderRepository, consoleNotification);
+const createOrder = new CreateOrder(paymentProcessorResolver, fileOrderRepository, consoleNotification);
 
 createOrder.execute(orderDto)
     .then((createdOrder) => {
